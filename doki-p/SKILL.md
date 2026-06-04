@@ -73,6 +73,7 @@ Z:\创新事业部\AIGC项目视频组\代行者素材\预注册可用素材
    - logo/no-logo compliance;
    - layout issues such as empty corners or logo blocking content.
 10. Only package approved files.
+11. At the end of each finished batch or approved delivery, create or update a delivery record workbook (`.xlsx`) in the final delivery folder or the user-specified target folder. Do not create CSV copies unless the user explicitly asks for CSV.
 
 ## Source reading commands
 
@@ -186,6 +187,37 @@ Default assumptions:
 
 Do not create contact sheets / preview boards in the final delivery folder unless the user explicitly asks.
 
+## Delivery record workbook
+
+At the end of a finished Doki static creative delivery, create or update one Excel workbook (`.xlsx`) that records the production details for every delivered asset.
+
+Default rules:
+
+- Create the workbook automatically after the final approved images are copied or renamed into the delivery folder.
+- Save the workbook in the final delivery folder unless the user provides a specific target folder.
+- Do not generate CSV, TSV, or other duplicate table formats unless the user explicitly requests them.
+- If the user asks to add extra columns later, update the same `.xlsx` workbook instead of creating a separate CSV.
+- Use a clear filename such as `<yyMMdd>-Doki-CV-P-<topic>全角色出图记录-GG-<designer>.xlsx`.
+- Keep the workbook readable: freeze the header row, wrap long text, widen prompt/source columns, and include filters.
+
+Required columns:
+
+1. 序号
+2. 角色中文
+3. 角色日文
+4. CV
+5. 最终画面文案
+6. 标题 / 剧情钩子
+7. 生图提示词
+8. 生图提示词中文翻译
+9. 使用素材-KV
+10. 使用素材-补充参考
+11. 输出成片文件
+12. 备注
+
+Record exact source paths and final output paths. When a generation prompt was revised because of an API/content-policy failure, record the revised title/prompt and note the reason in `备注`.
+
+
 ## Failure modes to avoid
 
 - Producing prompts from user copy alone when the Doki asset library is available and relevant.
@@ -202,6 +234,7 @@ Do not create contact sheets / preview boards in the final delivery folder unles
 - Placing logo blindly over important content.
 - Claiming an image is final when copy/character/logo audit failed.
 - Batch-running 8 images immediately after a new constraint.
+- Creating CSV/TSV delivery records by default when the user only needs the standard `.xlsx` delivery workbook.
 
 ## Response style
 
