@@ -1,0 +1,4 @@
+interface:
+  display_name: "Doki-P"
+  short_description: "Doki paid static creative workflow with asset-library discovery"
+  default_prompt: "Use $doki-p to produce Doki / 代行者 Japanese otome paid static creatives. Read the pre-registration asset library, character info table, voice-line table, and character references before writing prompts or packaging outputs."
