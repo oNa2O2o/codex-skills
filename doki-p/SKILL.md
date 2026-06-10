@@ -72,8 +72,14 @@ Z:\创新事业部\AIGC项目视频组\代行者素材\预注册可用素材
    - role tags accidentally added;
    - logo/no-logo compliance;
    - layout issues such as empty corners or logo blocking content.
-10. Only package approved files.
-11. At the end of each finished batch or approved delivery, create or update a delivery record workbook (`.xlsx`) in the final delivery folder or the user-specified target folder. Do not create CSV copies unless the user explicitly asks for CSV.
+10. Normalize final dimensions only after the user asks for it or the delivery spec requires it.
+   - For a size-only change, do not regenerate, redesign, add text, or locally re-compose the image.
+   - Before overwriting any selected/final folder, create a sibling backup folder named like `<folder>_原图备份_<size>修改前_<yyMMdd>`.
+   - Resize with high-quality resampling, preserve filenames and file formats, and keep the visual content unchanged.
+   - For square Doki static deliveries, common final size is exactly `1080x1080`; verify every output image dimensions after resizing.
+   - Record the resize action, backup path, target size, image count, and verification result in the workflow/retro and delivery record when applicable.
+11. Only package approved files.
+12. At the end of each finished batch or approved delivery, create or update a delivery record workbook (`.xlsx`) in the final delivery folder or the user-specified target folder. Do not create CSV copies unless the user explicitly asks for CSV.
 
 ## Source reading commands
 
@@ -117,6 +123,60 @@ Use this structure as a map, not as a substitute for reading the actual folder a
 - For image2/api2img direct-generation workflows, generate the final artwork directly with the model. Do not add local text layers, local typography, or local compositing unless the user explicitly allows that production method.
 - Write long prompts to a UTF-8 no-BOM temporary `.txt` file, then read the file content into the api2img call. Avoid passing long multilingual prompts with quotes directly in one command line because PowerShell/wrapper argument parsing can split Japanese/Chinese text into invalid arguments.
 - Generate to an ASCII-only temporary output path and filename first, especially on Windows. After a successful image is created and inspected, copy or rename it to the required Chinese delivery filename. This avoids api2img wrapper issues with Chinese paths, mojibake, and false `output already exists` errors.
+
+## Final size normalization
+
+Use this only for approved/selected images or when the user explicitly asks to change image dimensions.
+
+1. Confirm the source folder and target size from the user instruction, for example `筛选` to `1080x1080`.
+2. Count the source images before resizing.
+3. Create a backup folder before overwriting:
+   - Example: `筛选_原图备份_1080修改前_260610`.
+   - Copy every source image into the backup folder with the same filename.
+4. Resize in place only after backup succeeds.
+   - Use high-quality resampling.
+   - Preserve the exact filenames and extensions.
+   - Do not alter composition, text, color, logo, or character artwork for a size-only request.
+5. Verify after resizing:
+   - image count in the target folder;
+   - every image is exactly the requested pixel size;
+   - minimum file size is plausible and all files can be opened.
+6. Update the workflow record and retro:
+   - source folder;
+   - backup folder;
+   - target size;
+   - number of images processed;
+   - verification result.
+
+## Doki pair-image retro baseline
+
+For Doki two-character CV static creatives, apply these lessons from the accepted June 2026 batch:
+
+1. Preserve character consistency before improving the design.
+   - Especially for characters prone to style drift, reinforce official face, hair, outfit colors, accessories, line style, and cel-shading.
+   - Do not let the model redesign the character to match a poster style.
+2. Two-character images need relationship, not just side-by-side placement.
+   - Use natural shoulder angles, head turns, gaze interaction, slight foreground/background depth, and emotional distance.
+   - Avoid stiff front-facing lineup poses unless the concept explicitly requires a formal lineup.
+3. Minimal design still needs a visible design structure.
+   - Bright minimal style should keep white/light backgrounds, geometric blocks, thin lines, and negative space, but each direction needs a clear visual grammar.
+   - Do not interpret minimal as an empty background with characters and text only.
+4. Match emotion to the story direction.
+   - Co-performance poster: ceremonial, centered, formal.
+   - Mission: urgent, diagonal, directional, fast.
+   - Secret/reveal: suspenseful, offset, partially divided, uneasy but not dark.
+   - Close relationship: compressed distance, tension, restrained warmth.
+   - Daily life after events: warm, gentle, quiet.
+5. CV remains the first visual hierarchy.
+   - Keep the CV line large and horizontal.
+   - Do not add subcopy when the user forbids it.
+   - Use story title/direction labels only when they are part of the approved copy or current instruction.
+6. Keep a recoverable batch workflow.
+   - Archive rejected drafts clearly.
+   - Keep old versions before overwriting.
+   - Store modified versions in a batch folder such as `第一批修改`.
+   - After approval, normalize dimensions, back up originals, and verify every output.
+
 ## Prompt pattern
 
 ```text
@@ -215,7 +275,7 @@ Required columns:
 11. 输出成片文件
 12. 备注
 
-Record exact source paths and final output paths. When a generation prompt was revised because of an API/content-policy failure, record the revised title/prompt and note the reason in `备注`.
+Record exact source paths and final output paths. When a generation prompt was revised because of an API/content-policy failure, record the revised title/prompt and note the reason in `备注`. If final images are resized after approval, also record the original backup folder, target dimensions, processed image count, and verification result.
 
 
 ## Failure modes to avoid
@@ -227,6 +287,8 @@ Record exact source paths and final output paths. When a generation prompt was r
 - Local compositing or local typography when the accepted workflow is image2/api2img direct generation.
 - Passing long multilingual prompts directly through the command line instead of a UTF-8 prompt file.
 - Writing api2img output directly to Chinese paths/filenames when an ASCII temp path plus final rename would be safer.
+- Resizing approved/final images without first creating a full backup folder.
+- Claiming a folder has been resized without verifying every image's pixel dimensions and count.
 - Local compositing when user demanded image2 only.
 - Whole-image regeneration when user asked to modify only logo.
 - Adding logo after user said no logo.
